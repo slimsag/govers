@@ -1,40 +1,23 @@
-The govers command searches all Go packages under the current
-directory for imports with a prefix matching a particular pattern, and
-changes them to another specified prefix. As with gofmt and gofix, there is
-no backup - you are expected to be using a version control system.
-It prints the names of any packages that are modified.
+A fork of @rogpeppe's govers tool that can be used to migrate from the old `vN-dev` import paths to the new `vN-unstable` import paths.
 
-Usage:
+For all other purposes: use @rogpeppe's govers tool instead!
 
-	govers [-d] [-m regexp] [-n] new-package-path
+See https://github.com/azul3d/semver/issues/7 for more details.
 
-It accepts the following flags:
+To switch to the new `vN-unstable` paths:
 
-	-d
-		Suppress dependency checking
-	-m regexp
-		Search for and change imports which have the
-		given pattern as a prefix (see below for the default).
-	-n
-		Don't make any changes; just perform checks.
+```
+# Crucial(!):
+cd my/pkg/path
 
-If the pattern is not specified with the -m flag, it is derived from
-new-package-path and matches any prefix that is the same in all but
-version.  A version is defined to be an element within a package path
-that matches the regular expression "(/|\.)v[0-9.]+(-unstable)?".
+# Install my fork:
+go get -u github.com/slimsag/govers
 
-The govers command will also check (unless the -d flag is given)
-that no (recursive) dependencies would be changed if the same govers
-command was run on them. If they would, govers will fail and do nothing.
+# Switch from v2-dev to v2-unstable:
+govers azul3d.org/gfx.v2-unstable
+govers azul3d.org/mouse.v2-unstable
+govers azul3d.org/keyboard.v2-unstable
 
-For example, say a new version of the tomb package is released.
-The old import path was gopkg.in/tomb.v2, and we want
-to use the new verson, gopkg.in/tomb.v3. In the root of the
-source tree we want to change, we run:
-
-	govers gopkg.in/tomb.v3
-
-This will change all gopkg.in/tomb.v2 imports to use v3.
-It will also check that all external packages that we're
-using are also using v3, making sure that our program
-is consistently using the same version throughout.
+# Install real govers:
+go get -u github.com/rogpeppe/govers
+```
